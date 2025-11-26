@@ -12,25 +12,146 @@ body {
   color: #0f172a;
 }
 
-/* =========================================
-   SPLASH SCREEN ANIMATIONS
-   ========================================== */
+/* 1. Animated Gradient Mesh Background */
+@keyframes meshMove {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
 
-/* 1. Progress Bar Animation */
+.mesh-gradient {
+  background: linear-gradient(
+    45deg,
+    rgba(59, 135, 196, 0.15) 0%,
+    rgba(35, 111, 166, 0.2) 25%,
+    rgba(50, 73, 118, 0.15) 50%,
+    rgba(35, 111, 166, 0.2) 75%,
+    rgba(59, 135, 196, 0.15) 100%
+  );
+  background-size: 400% 400%;
+  animation: meshMove 15s ease infinite;
+}
+
+/* 2. Floating Orbs Animation */
+@keyframes orbFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  33% {
+    transform: translate(50px, -50px) scale(1.1);
+    opacity: 0.5;
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.9);
+    opacity: 0.4;
+  }
+}
+
+.orb-1 {
+  top: 10%;
+  left: 10%;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+
+.orb-2 {
+  top: 50%;
+  right: 15%;
+  animation: orbFloat 25s ease-in-out infinite 5s;
+}
+
+.orb-3 {
+  bottom: 15%;
+  left: 20%;
+  animation: orbFloat 22s ease-in-out infinite 10s;
+}
+
+/* 3. Animated Grid Pattern */
+@keyframes gridMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 50px 50px;
+  }
+}
+
+.grid-pattern {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
+}
+
+/* 4. Light Particles */
+@keyframes lightParticleFloat {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100px, -100vh);
+    opacity: 0;
+  }
+}
+
+.light-particle-1 {
+  top: 100%;
+  left: 20%;
+  animation: lightParticleFloat 8s ease-in infinite;
+}
+
+.light-particle-2 {
+  top: 100%;
+  left: 50%;
+  animation: lightParticleFloat 10s ease-in infinite 2s;
+}
+
+.light-particle-3 {
+  top: 100%;
+  right: 30%;
+  animation: lightParticleFloat 7s ease-in infinite 4s;
+}
+
+.light-particle-4 {
+  top: 100%;
+  left: 70%;
+  animation: lightParticleFloat 9s ease-in infinite 1s;
+}
+
+.light-particle-5 {
+  top: 100%;
+  right: 10%;
+  animation: lightParticleFloat 11s ease-in infinite 3s;
+}
+
+/* 5. Progress Bar Animation with Glow */
 @keyframes progress-grow {
   0% { width: 0%; }
   100% { width: 100%; }
 }
 
-@keyframes shimmer-move {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-.loading-fill {
+.loading-fill-glow {
   animation: progress-grow 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  background: linear-gradient(90deg, #236fa6 0%, #3b87c4 50%, #236fa6 100%);
+  background: linear-gradient(90deg, 
+    rgba(224, 242, 254, 0.8) 0%, 
+    rgba(255, 255, 255, 0.9) 50%, 
+    rgba(224, 242, 254, 0.8) 100%
+  );
   background-size: 200% 100%;
+  box-shadow: 
+    0 0 20px rgba(224, 242, 254, 0.5),
+    0 0 40px rgba(224, 242, 254, 0.3);
   animation: progress-grow 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards,
              shimmer-bg 2s ease-in-out infinite;
 }
@@ -42,12 +163,17 @@ body {
 }
 
 /* Shimmer Overlay Effect */
+@keyframes shimmer-move {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 .shimmer-overlay {
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
   animation: shimmer-move 2s ease-in-out infinite;
 }
 
-/* 2. Entrance Animations (Staggered Fade In Up) */
+/* 6. Entrance Animations (Staggered Fade In Up) */
 @keyframes fadeInUpSoft {
   from {
     opacity: 0;
@@ -79,55 +205,7 @@ body {
   opacity: 0;
 }
 
-/* 3. Floating Particles Animation */
-@keyframes particleFloat {
-  0%, 100% {
-    opacity: 0;
-    transform: translate(0, 0) scale(1);
-  }
-  25% {
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 0.4;
-    transform: translate(30px, -30px) scale(1.1);
-  }
-  75% {
-    opacity: 0.2;
-  }
-}
-
-.particle-1 {
-  top: 10%;
-  left: 15%;
-  animation: particleFloat 8s ease-in-out infinite;
-}
-
-.particle-2 {
-  top: 60%;
-  right: 15%;
-  animation: particleFloat 8s ease-in-out infinite 1s;
-}
-
-.particle-3 {
-  bottom: 20%;
-  left: 10%;
-  animation: particleFloat 8s ease-in-out infinite 2s;
-}
-
-.particle-4 {
-  top: 25%;
-  right: 20%;
-  animation: particleFloat 8s ease-in-out infinite 1.5s;
-}
-
-.particle-5 {
-  top: 50%;
-  left: 50%;
-  animation: particleFloat 8s ease-in-out infinite 0.5s;
-}
-
-/* 4. Pulsing Ring Animation */
+/* 7. Pulsing Ring Animation */
 @keyframes ringPulse {
   0%, 100% {
     transform: scale(1);
@@ -151,7 +229,7 @@ body {
   animation: ringPulse 3s ease-in-out infinite 1s;
 }
 
-/* 5. Card Floating Animation */
+/* 8. Card Floating Animation */
 @keyframes cardFloat {
   0%, 100% {
     transform: translateY(0px);
@@ -165,7 +243,7 @@ body {
   animation: cardFloat 3s ease-in-out infinite;
 }
 
-/* 6. Accent Shine Effect */
+/* 9. Accent Shine Effect */
 @keyframes accentShine {
   0%, 100% {
     filter: brightness(1);
@@ -179,7 +257,7 @@ body {
   animation: accentShine 3s ease-in-out infinite;
 }
 
-/* 7. Line Expand Animation */
+/* 10. Line Expand Animation */
 @keyframes lineExpand {
   0%, 100% {
     width: 2.5rem;
@@ -195,7 +273,7 @@ body {
   animation: lineExpand 2s ease-in-out infinite;
 }
 
-/* 8. Loading Text Pulse */
+/* 11. Loading Text Pulse */
 @keyframes loadingTextPulse {
   0%, 100% {
     opacity: 0.5;
@@ -209,7 +287,7 @@ body {
   animation: loadingTextPulse 1.5s ease-in-out infinite;
 }
 
-/* 9. Loading Dots Animation */
+/* 12. Loading Dots Animation */
 @keyframes loadingDots {
   0%, 20% {
     content: '.';
@@ -227,7 +305,7 @@ body {
   animation: loadingDots 1.5s steps(3, end) infinite;
 }
 
-/* 10. Shine Effect on Logo */
+/* 13. Shine Effect on Logo */
 @keyframes shineEffect {
   0% {
     transform: translateX(-100%) translateY(-100%) rotate(45deg);
@@ -241,32 +319,229 @@ body {
   animation: shineEffect 3s ease-in-out infinite;
 }
 
-/* 11. Decorative Blob Pulse */
-@keyframes decorationPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.1;
+@media (max-width: 640px) {
+  .orb {
+    transform: scale(0.7);
+  }
+  
+  .light-particle {
+    transform: scale(0.8);
+  }
+}
+
+/* Logo Bounce Animation */
+@keyframes logoBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(-50px);
   }
   50% {
-    transform: scale(1.2);
-    opacity: 0.2;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
 
-.decoration-blob-tl {
-  animation: decorationPulse 6s ease-in-out infinite;
+.animate-logo-bounce {
+  animation: logoBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-.decoration-blob-br {
-  animation: decorationPulse 6s ease-in-out infinite 3s;
+/* Logo Icon Pulse */
+@keyframes logoIconPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
-/* =========================================
-   RESPONSIVE ADJUSTMENTS
-   ========================================== */
+.animate-logo-icon {
+  animation: logoIconPulse 2s ease-in-out infinite;
+}
 
+/* Brand Title Slide In */
+@keyframes brandTitleSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-brand-title {
+  animation: brandTitleSlide 0.7s ease-out 0.3s backwards;
+}
+
+/* Brand Subtitle Fade In */
+@keyframes brandSubtitleFade {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-brand-subtitle {
+  animation: brandSubtitleFade 0.7s ease-out 0.5s backwards;
+}
+
+/* Form Switch Animation (Login ↔ Signup) */
+@keyframes formSwitch {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-form-switch {
+  animation: formSwitch 0.4s ease-out;
+}
+
+/* Field Slide In (for signup fields) */
+@keyframes fieldSlideIn {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    max-height: 200px;
+    transform: translateY(0);
+  }
+}
+
+.animate-field-slide-in {
+  animation: fieldSlideIn 0.4s ease-out;
+}
+
+/* Placeholder Animation - Slide Up from Bottom */
+@keyframes placeholderSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.placeholder-animate::placeholder {
+  animation: placeholderSlideUp 0.5s ease-out;
+}
+
+/* Enhanced Input Focus Animation */
+input:focus::placeholder {
+  opacity: 0.5;
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Slide Up Animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.7s ease-out;
+}
+
+/* Scale In Animation */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+/* Background Gradient Animation */
+@keyframes gradientMove {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Smooth transitions for responsive design */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Mobile Optimizations */
 @media (max-width: 640px) {
-  .particle {
-    transform: scale(0.7);
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+}
+
+/* Desktop Enhancements */
+@media (min-width: 1024px) {
+  /* Subtle hover effects on desktop */
+  input:hover {
+    border-color: rgba(35, 111, 166, 0.3);
+    transition: border-color 0.2s ease;
+  }
+  
+  button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(50, 73, 118, 0.2);
   }
 }

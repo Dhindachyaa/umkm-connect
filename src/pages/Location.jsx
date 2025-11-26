@@ -5,10 +5,8 @@ import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 
 const Location = () => {
-  const [locations, setLocations] = useState([]);
-  
-  // Koordinat default Semarang
-  const position = [-6.966667, 110.416664]; 
+const [locations, setLocations] = useState([]);
+const position = [-6.966667, 110.416664]; 
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -21,7 +19,7 @@ const Location = () => {
   return (
     <div className="h-screen w-full flex flex-col">
         <div className="bg-white p-4 shadow z-10">
-            <h1 className="font-bold text-lg">Peta Persebaran UMKM</h1>
+            <h1 className="text-2xl font-bold text-[#324976]">Peta Persebaran UMKM</h1>
             <p className="text-xs text-gray-500">Temukan UMKM di sekitar Semarang</p>
         </div>
         

@@ -25,7 +25,6 @@ export default function UMKMForm() {
   const [error, setError] = useState(null);
 
   const categories = ['Makanan', 'Minuman', 'Kerajinan', 'Fashion', 'Jasa', 'Lain-lain'];
-  // Restore draft
   useEffect(() => {
     if (!isEditMode) {
       const saved = localStorage.getItem('unsavedUMKMForm');
@@ -40,7 +39,6 @@ export default function UMKMForm() {
     }
   }, [isEditMode]);
 
-  // Auto save draft
   useEffect(() => {
     if (!isEditMode) {
       localStorage.setItem(
@@ -53,7 +51,6 @@ export default function UMKMForm() {
     }
   }, [formData, imageFile, isEditMode]);
 
-  // Fetch data kalau edit
   useEffect(() => {
     if (!isEditMode) return;
 
@@ -142,20 +139,17 @@ const extractCoordsFromGoogleMapsUrl = (url) => {
       const finalImageUrl = await uploadImage(imageFile);
       const { latitude, longitude } = extractCoordsFromGoogleMapsUrl(formData.map_url);
 
-      // Pastikan ada koordinat sebelum simpan (Opsional, hapus jika boleh null)
       if (!latitude || !longitude) {
          throw new Error("Link Google Maps tidak valid atau koordinat tidak ditemukan.");
       }
 
-      // ✅ DATA FINAL YANG DIKIRIM KE SUPABASE
-      // Perhatikan: map_url TIDAK dimasukkan ke sini
       const dataToSubmit = {
         name: formData.name,
         category: formData.category,
         description: formData.description,
         address: formData.address,
-        latitude: latitude,   // Hanya kirim hasil convert
-        longitude: longitude, // Hanya kirim hasil convert
+        latitude: latitude,   
+        longitude: longitude,
         image_url: finalImageUrl,
       };
 

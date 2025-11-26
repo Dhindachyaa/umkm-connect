@@ -1,20 +1,10 @@
 import { Home, Store, ShoppingBag, MapPin, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
-// --- PALET WARNA ---
-// PRIMARY_DARK: #324976
-// PRIMARY_ACCENT: #236fa6
-// BG_LIGHT: #e0f2fe
-// -------------------
-
 const BottomNav = () => {
-  const location = useLocation();
-
-  // Fungsi helper untuk mengecek link aktif
-  const isActive = (path) => location.pathname === path
-    // Warna Aktif: PRIMARY_ACCENT #236fa6
+const location = useLocation();
+const isActive = (path) => location.pathname === path
     ? "text-[#236fa6] scale-110 font-semibold"
-    // Warna Tidak Aktif: PRIMARY_DARK #324976 dengan opasitas, hover menggunakan PRIMARY_ACCENT
     : "text-[#324976]/70 hover:text-[#236fa6]";
 
   return (
@@ -29,10 +19,8 @@ const BottomNav = () => {
         <span className="text-[10px] font-medium mt-1">UMKM</span>
       </Link>
 
-      {/* Tombol Tengah Menonjol (Products) */}
       <Link
         to="/products"
-        // Background: PRIMARY_ACCENT #236fa6, Ring: BG_LIGHT #e0f2fe
         className={`flex flex-col items-center transition-all -mt-5 bg-[#236fa6] p-3 rounded-full shadow-lg text-white ring-4 ring-[#e0f2fe] hover:scale-105`}
       >
         <ShoppingBag size={24} />

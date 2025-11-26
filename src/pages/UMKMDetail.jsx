@@ -1,8 +1,7 @@
-// src/pages/UMKMDetail.jsx
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
-import { ArrowLeft, Heart, MapPin, Phone, ExternalLink, Edit, Trash2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Heart, MapPin, Phone, ExternalLink, Edit, Trash2, Loader2, Share2, Star, Clock } from 'lucide-react';
 
 const UMKMDetail = () => {
     const { id } = useParams();
@@ -18,14 +17,19 @@ const UMKMDetail = () => {
     useEffect(() => {
         const getDetail = async () => {
             setLoading(true);
-            const { data, error } = await supabase.from('umkm').select('*').eq('id', id).single();
-            if (error) console.error('Error fetching UMKM detail:', error.message);
-            if (data) {
-                setUmkm(data);
-                const saved = JSON.parse(localStorage.getItem('favorites') || '[]');
-                setIsFavorite(saved.some(item => item.id === data.id));
+            try {
+                const { data, error } = await supabase.from('umkm').select('*').eq('id', id).single();
+                if (error) throw new Error(error.message);
+                if (data) {
+                    setUmkm(data);
+                    const saved = JSON.parse(localStorage.getItem('favorites') || '[]');
+                    setIsFavorite(saved.some(item => item.id === data.id));
+                }
+            } catch (error) {
+                console.error('Error fetching UMKM detail:', error.message);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
         getDetail();
     }, [id]);
@@ -63,83 +67,160 @@ const UMKMDetail = () => {
 
     const handleEdit = () => navigate(`/umkm/edit/${id}`);
 
-    if (loading) return <div className="p-10 text-center text-gray-600">Memuat Detail...</div>;
-    if (!umkm) return <div className="p-10 text-center text-red-500">UMKM tidak ditemukan.</div>;
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-b from-[#e0f2fe] to-white flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-16 h-16 rounded-full border-4 border-[#e0f2fe] border-t-[#236fa6] animate-spin mx-auto mb-4"></div>
+                    <p className="text-[#324976] font-semibold">Memuat Detail...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!umkm) {
+        return (
+            <div className="min-h-screen bg-gradient-to-b from-[#e0f2fe] to-white flex items-center justify-center p-4">
+                <div className="bg-white rounded-2xl p-8 text-center shadow-lg max-w-md w-full">
+                    <p className="text-red-500 font-semibold mb-4">UMKM tidak ditemukan.</p>
+                    <button
+                        onClick={() => navigate('/umkm')}
+                        className="w-full bg-[#236fa6] text-white py-3 rounded-xl font-bold hover:bg-[#324976] transition-all duration-300"
+                    >
+                        Kembali ke Daftar
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     const mapEmbedUrl = umkm.latitude && umkm.longitude
         ? `https://maps.google.com/maps?q=${umkm.latitude},${umkm.longitude}&hl=es;z=16&output=embed`
         : null;
 
     return (
-        <div className="bg-white min-h-screen relative">
-            <div className="h-64 w-full bg-gray-200 relative">
+        <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen pb-1">
+            <div className="relative h-64 md:h-80 w-full bg-gradient-to-br from-[#e0f2fe] to-[#d0e8f7] overflow-hidden group">
                 <img 
                     src={umkm.image_url || 'https://placehold.co/600x400?text=UMKM+Logo'} 
-                    className="w-full h-full object-cover" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                     alt={`Logo ${umkm.name}`}
                 />
-                <button onClick={() => navigate(-1)} className="absolute top-4 left-4 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition-colors">
-                    <ArrowLeft size={20} />
+                
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+
+                <button 
+                    onClick={() => navigate(-1)} 
+                    className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm p-2.5 rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all duration-300 z-10 group/btn"
+                >
+                    <ArrowLeft size={20} className="text-[#324976] group-hover/btn:translate-x-[-2px] transition-transform" />
                 </button>
 
-                <div className="absolute top-4 right-4 flex space-x-2">
-                    <button onClick={handleEdit} className="bg-blue-600 text-white p-2 rounded-full shadow-md hover:bg-blue-700 transition">
-                        <Edit size={20} />
+                <div className="absolute top-4 right-4 flex gap-2 z-10">
+                    <button 
+                        onClick={handleEdit} 
+                        className="bg-[#236fa6] text-white p-2.5 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 group/edit"
+                        title="Edit UMKM"
+                    >
+                        <Edit size={20} className="group-hover/edit:rotate-12 transition-transform" />
                     </button>
-                    <button onClick={handleDelete} className="bg-red-600 text-white p-2 rounded-full shadow-md hover:bg-red-700 transition">
-                        <Trash2 size={20} />
+                    <button 
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                        className="bg-red-500 text-white p-2.5 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 disabled:opacity-50 group/delete"
+                        title="Hapus UMKM"
+                    >
+                        {isDeleting ? <Loader2 size={20} className="animate-spin" /> : <Trash2 size={20} className="group-hover/delete:rotate-12 transition-transform" />}
                     </button>
+                </div>
+
+
+            </div>
+
+            <div className="px-4 md:px-6 -mt-8 relative z-20 animate-fade-in">
+                <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 space-y-6">
+                    
+                    <div className="space-y-4">
+                        <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                                <div className="inline-block mb-3">
+                                    <span className="bg-gradient-to-r from-[#e0f2fe] to-[#bae6fd] text-[#236fa6] text-xs px-3 py-1.5 rounded-full font-bold border border-[#236fa6]/20">
+                                        {umkm.category || 'UMKM'}
+                                    </span>
+                                </div>
+                                <h1 className="text-3xl md:text-4xl font-bold text-[#324976] leading-tight">
+                                    {umkm.name}
+                                </h1>
+                            </div>
+                            <button 
+                                onClick={handleFavorite}
+                                className="bg-white border-2 border-[#e0f2fe] p-2 rounded-full shadow-md hover:shadow-lg hover:scale-110 hover:border-red-300 transition-all duration-300 z-10 group/fav flex-shrink-0"
+                            >
+                                <Heart 
+                                    size={18}
+                                    fill={isFavorite ? 'currentColor' : 'none'} 
+                                    className={`transition-all duration-300 ${isFavorite ? 'text-red-500 group-hover/fav:scale-125' : 'text-gray-400 group-hover/fav:text-red-500'}`}
+                                />
+                            </button>
+                        </div>
+
+                        <div className="flex items-start gap-3 text-gray-600 text-sm bg-[#e0f2fe]/30 p-4 rounded-xl border border-[#e0f2fe]">
+                            <MapPin size={18} className="text-[#236fa6] flex-shrink-0 mt-0.5" /> 
+                            <p className='leading-relaxed font-medium'>{umkm.address}</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-3 border-t border-gray-200 pt-6">
+                        <h3 className="font-bold text-lg text-[#324976] flex items-center gap-2">
+                            <div className="w-1 h-6 bg-gradient-to-b from-[#236fa6] to-[#324976] rounded"></div>
+                            Tentang {umkm.name}
+                        </h3>
+                        <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            {umkm.description}
+                        </p>
+                    </div>
+
+                    {mapEmbedUrl && (
+                        <div className="space-y-3 border-t border-gray-200 pt-6">
+                            <h3 className="font-bold text-lg text-[#324976] flex items-center gap-2">
+                                <div className="w-1 h-6 bg-gradient-to-b from-[#236fa6] to-[#324976] rounded"></div>
+                                Lokasi di Peta
+                            </h3>
+                            <div className="rounded-2xl overflow-hidden shadow-md border-2 border-[#e0f2fe] hover:shadow-lg transition-shadow duration-300">
+                                <iframe
+                                    src={mapEmbedUrl}
+                                    width="100%"
+                                    height="300"
+                                    className="rounded-xl"
+                                    style={{ border: 0 }}
+                                    allowFullScreen
+                                    loading="lazy"
+                                    title="Lokasi UMKM"
+                                ></iframe>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
 
-            <div className="-mt-6 relative bg-white rounded-t-3xl p-6 shadow-2xl pb-20">
-                <div className="flex justify-between items-start mb-2">
-                    <div>
-                        <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-md font-semibold">{umkm.category || 'UMKM'}</span>
-                        <h1 className="text-2xl font-bold mt-2">{umkm.name}</h1>
-                    </div>
-                    <button onClick={handleFavorite} className={`bg-pink-50 p-2 rounded-full transition ${isFavorite ? 'text-pink-500' : 'text-gray-400'}`}>
-                        <Heart fill={isFavorite ? 'currentColor' : 'none'} />
-                    </button>
-                </div>
+            <style>{`
+                @keyframes fade-in {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
 
-                <div className="flex items-start text-gray-500 text-sm mb-6">
-                    <MapPin size={16} className="mr-2 mt-0.5 flex-shrink-0" /> 
-                    <p className='leading-snug'>{umkm.address}</p>
-                </div>
-
-                <div className="mb-6 border-t pt-4">
-                    <h3 className="font-bold text-lg mb-2">Tentang {umkm.name}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{umkm.description}</p>
-                </div>
-
-                {mapEmbedUrl && (
-                    <div className="mb-6">
-                        <iframe
-                            src={mapEmbedUrl}
-                            width="100%"
-                            height="250"
-                            className="rounded-xl border border-gray-300"
-                            allowFullScreen
-                            loading="lazy"
-                            title="Lokasi UMKM"
-                        ></iframe>
-                    </div>
-                )}
-
-                <div className="space-y-4 mb-8">
-                    {umkm.phone && (
-                        <a href={`https://wa.me/${umkm.phone}`} target="_blank" rel="noreferrer" className="flex items-center justify-center w-full bg-green-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-green-200 hover:bg-green-700 transition">
-                            <Phone size={18} className="mr-2"/> Hubungi via WhatsApp
-                        </a>
-                    )}
-                    {umkm.map_url && (
-                        <a href={umkm.map_url} target="_blank" rel="noreferrer" className="flex items-center justify-center w-full bg-orange-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-orange-200 hover:bg-orange-600 transition">
-                            <ExternalLink size={18} className="mr-2"/> Buka di Google Maps
-                        </a>
-                    )}
-                </div>
-            </div>
+                .animate-fade-in {
+                    animation: fade-in 0.6s ease-out forwards;
+                    opacity: 0;
+                }
+            `}</style>
         </div>
     );
 };

@@ -1,16 +1,13 @@
-// src/pages/ProductForm.jsx
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabase/client';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, UploadCloud, Save, Loader2 } from 'lucide-react';
 
-// Tentukan Kunci Unik untuk Local Storage
 const LOCAL_STORAGE_KEY = 'productFormDraft';
 
 export default function ProductForm() {
-    const { id } = useParams(); // ID hanya ada jika mode EDIT
+    const { id } = useParams(); 
     const navigate = useNavigate();
-
     const isEditMode = !!id; 
 
     const initialFormData = {
@@ -21,15 +18,12 @@ export default function ProductForm() {
         image_url: '',
     };
 
-    // --- MODIFIKASI 1: INISIALISASI STATE DARI LOCAL STORAGE ---
     const [formData, setFormData] = useState(() => {
-        // Hanya muat dari Local Storage jika mode TAMBAH
         if (!isEditMode) {
             const savedDraft = localStorage.getItem(LOCAL_STORAGE_KEY);
             if (savedDraft) {
                 try {
                     const parsedData = JSON.parse(savedDraft);
-                    // Gabungkan dengan initialFormData untuk memastikan semua field ada
                     return { ...initialFormData, ...parsedData }; 
                 } catch (e) {
                     console.error("Gagal memparsing draft formulir:", e);
@@ -37,19 +31,15 @@ export default function ProductForm() {
                 }
             }
         }
-        // Jika mode EDIT atau tidak ada draft, gunakan nilai awal
         return initialFormData;
     });
-    // --------------------------------------------------------
 
     const [imageFile, setImageFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
-
     const categories = ['Makanan', 'Minuman', 'Kerajinan', 'Fashion', 'Jasa', 'Lain-lain'];
 
-    // --- LOGIKA FETCH UNTUK EDIT MODE (Tidak Berubah) ---
     useEffect(() => {
         if (!isEditMode) return;
 
@@ -78,16 +68,12 @@ export default function ProductForm() {
         fetchProduct();
     }, [id, isEditMode]);
 
-    // --- MODIFIKASI 2: SIMPAN KE LOCAL STORAGE SAAT PERUBAHAN ---
     useEffect(() => {
-        // Simpan setiap kali formData berubah, hanya untuk mode TAMBAH
         if (!isEditMode) {
-            // Hindari menyimpan image_url lama dari edit mode di draft
             const { image_url, ...draftData } = formData;
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(draftData));
         }
     }, [formData, isEditMode]);
-    // --------------------------------------------------------
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -150,11 +136,9 @@ export default function ProductForm() {
             const { error: dbError } = await supabaseQuery;
             if (dbError) throw new Error(`Gagal menyimpan data: ${dbError.message}`);
 
-            // --- MODIFIKASI 3: HAPUS DRAFT SETELAH SUKSES SUBMIT DI MODE TAMBAH ---
             if (!isEditMode) {
                 localStorage.removeItem(LOCAL_STORAGE_KEY);
             }
-            // ------------------------------------------------------------------
 
             alert(successMessage);
             navigate('/products');
