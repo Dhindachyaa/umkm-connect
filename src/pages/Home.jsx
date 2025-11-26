@@ -9,7 +9,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   const [userProfile, setUserProfile] = useState({
-    name: "Pengunjung Tamu",
+    name: "Pengguna",
     photo: null
   });
 
@@ -17,7 +17,7 @@ const Home = () => {
     const savedProfile = JSON.parse(localStorage.getItem('user_profile') || 'null');
     if (savedProfile) {
       setUserProfile({
-        name: savedProfile.name || "Pengunjung Tamu",
+        name: savedProfile.name || "Pengguna",
         photo: savedProfile.photo || null
       });
     }

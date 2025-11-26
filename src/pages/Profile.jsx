@@ -79,6 +79,11 @@ const Profile = () => {
     const file = e.target.files[0];
     if (!file || !session?.user) return;
 
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; 
+    if (file.size > MAX_FILE_SIZE) { 
+        alert('Gagal: Ukuran file melebihi batas (Maks. 5MB). Coba gunakan gambar yang lebih kecil.');
+        return; 
+    }
     try {
       const fileName = `${session.user.id}-${Date.now()}-${file.name}`;
 
