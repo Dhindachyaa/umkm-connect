@@ -15,35 +15,38 @@ export default defineConfig({
         disabled: false,
         config: true,
       },
-      
-      includeAssets: ['favicon.ico', 'logo.png'], 
+      
+      includeAssets: ['favicon.ico', 'logo.png'], 
 
       manifest: {
         name: 'umkm-connect',
-        short_name: 'umkm-connect',
+        short_name: 'UMKM-V4', // 🚨 Diubah untuk memastikan update Manifest
         description: 'TAPraktikumPPB',
         theme_color: '#ffffff',
 
-        icons: [
-          {
-            src: '/logo.png', 
-            sizes: '192x192', 
-            type: 'image/png',
-            purpose: 'any maskable', 
-          },
-          {
-            src: '/logo.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
-        ],
+        icons: [
+          {
+            src: '/logo.png', 
+            sizes: '192x192', 
+            type: 'image/png',
+            purpose: 'any maskable', 
+          },
+          {
+            src: '/logo.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+        ],
       },
 
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+        // Pastikan format gambar yang mungkin digunakan terdaftar
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,jpg}'], 
         cleanupOutdatedCaches: true,
         clientsClaim: true,
+        // 🔑 Solusi untuk masalah caching/update Service Worker yang membandel
+        skipWaiting: true,
       },
 
       devOptions: {
