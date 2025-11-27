@@ -318,7 +318,7 @@ const Profile = () => {
                   
                   {profilePic ? (
                     <img 
-                      src={profilePic} 
+                      src={`${profilePic}?t=${Date.now()}`}
                       alt="Profile" 
                       className="relative w-36 h-36 rounded-full object-cover border-4 border-white shadow-2xl"
                     />
