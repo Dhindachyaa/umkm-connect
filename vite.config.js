@@ -16,7 +16,7 @@ export default defineConfig({
         config: true,
       },
       
-      includeAssets: ['favicon.ico', 'logo.png'], 
+      includeAssets: ['logo.png'], 
 
       manifest: {
         name: 'umkm-connect',
