@@ -17,7 +17,7 @@ const Profile = () => {
   const [profilePic, setProfilePic] = useState(DEFAULT_PROFILE_DATA.photo);
   const [isEditing, setIsEditing] = useState(false);
   const [userEmail, setUserEmail] = useState('');
-
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [favoritesUMKM, setFavoritesUMKM] = useState([]);
   const [favoritesProduct, setFavoritesProduct] = useState([]);
   const [activeTab, setActiveTab] = useState('umkm'); 
@@ -118,10 +118,17 @@ const Profile = () => {
   };
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) alert('Logout Gagal: ' + error.message);
-    else navigate('/login');
-  };
+    setIsLoggingOut(true); 
+        const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+        console.error('Logout Server Error (Token mungkin expired/missing):', error.message);
+    } 
+  
+    setSession(null); 
+    navigate('/login');
+    setIsLoggingOut(false);
+  };
 
   if (!session) {
     return (
@@ -383,11 +390,12 @@ const Profile = () => {
               </button>
               
               <button 
-                onClick={handleLogout} 
+                onClick={handleLogout}
+                disabled={isLoggingOut}  
                 className="px-4 py-3 rounded-xl flex items-center gap-2 font-semibold bg-red-500/90 backdrop-blur-md hover:bg-red-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-white/20"
               >
                 <LogOut size={20} />
-                Logout
+                {isLoggingOut ? 'Memproses...' : 'Logout'}
               </button>
             </div>
           </div>
